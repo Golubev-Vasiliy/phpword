@@ -1,33 +1,30 @@
 <?php
-    require_once 'vendor/autoload.php';
+    date_default_timezone_set('UTC');
+    require 'vendor/autoload.php';
     if(isset($_POST['send']))
     {
         $phpWord = new \PhpOffice\PhpWord\PhpWord();
-        //$phpWord->setDefaultFontName('Times New Roman');
-        //$phpWord->setDefaultFontSize(14);
+        $section = $phpWord->createSection();
+        $section->addText('Hello World!');
+            $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+    $filename = "Perfomance_Appraisal.docx";
+    $objWriter->save($filename);
 
-        
-        //Задание свойств документа 
-        //$properties = $phpWord->getDocInfo();
-        //$properties->setCreator('Name'); //Создатель документа (пользователь)
-        //$properties->setCompany('Company'); //Организация
-        //$properties->setTitle('Title'); //Название
-        //$properties->setDescription('Description'); //Описание
-        //$properties->setCategory('My category'); //Категория
-        //$properties->setSubject('My subject'); //Тема
-        //$properties->setKeywords('my, key, word');  //Ключевые слова
-        
 
-        //Скачивание сформированного сообщения
-        header('Content-Description: File Transfer');
-        header('Content-Disposition: attachment; filename="hello.docx"');
-        header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-        header('Content-Transfer-Encoding: binary');
-        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-        header('Expires: 0');
-        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
-        $objWriter->save('php://output');
+// The following offers file to user on client side: deletes temp version of file
+    header('Content-Description: File Transfer');
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename='.$filename);
+    header('Content-Transfer-Encoding: binary');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+    header('Pragma: public');
+    header('Content-Length: ' . filesize($filename));
+    flush();
+    readfile($filename);
+    unlink($filename); // deletes the temporary file
     }
+
 ?>
 
 <!DOCTYPE html>
